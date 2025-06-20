@@ -1,0 +1,27 @@
+{
+  "canisters": {
+    "ic_swipe_backend": {
+      "candid": "src/ic_swipe_backend/ic_swipe_backend.did",
+      "package": "ic_swipe_backend",
+      "type": "rust"
+    },
+    "ic_swipe_frontend": {
+      "dependencies": [
+        "ic_swipe_backend"
+      ],
+      "source": [
+        "src/ic_swipe_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "ic_swipe_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
