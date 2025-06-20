@@ -3,6 +3,7 @@ import { motion, useAnimation } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ThumbsUp, ThumbsDown } from "lucide-react";
 import { TokenCard } from "./TokenCard";
+import { Toast } from "./Toast";
 
 // Mock token data for different categories
 const getMockTokens = (category) => {
@@ -146,6 +147,7 @@ export function SwipePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [trustScore, setTrustScore] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState(null);
   const controls = useAnimation();
 
   // Initialize tokens and trust score
@@ -155,6 +157,11 @@ export function SwipePage() {
     setTrustScore(Math.floor(Math.random() * 60) + 40); // Random trust score 40-100
     setLoading(false);
   }, [category]);
+
+  // Close toast function
+  const closeToast = () => {
+    setToast(null);
+  };
 
   const currentToken = tokens[currentIndex];
 
@@ -197,6 +204,15 @@ export function SwipePage() {
 
   const handleBuy = async () => {
     console.log('Buying token:', currentToken);
+    
+    // Show success toast
+    setToast({
+      type: 'success',
+      title: 'Token Added! 🚀',
+      message: `${currentToken.baseToken?.name || currentToken.name} added to your portfolio`,
+      duration: 3000
+    });
+    
     // TODO: Add to portfolio logic will be added later
     
     // Move to next token
@@ -208,6 +224,14 @@ export function SwipePage() {
 
   const handleSkip = async () => {
     console.log('Skipping token:', currentToken);
+    
+    // Show info toast
+    setToast({
+      type: 'info',
+      title: 'Token Skipped 👍',
+      message: `Passed on ${currentToken.baseToken?.name || currentToken.name}`,
+      duration: 2000
+    });
     
     // Move to next token
     if (currentIndex < tokens.length - 1) {
@@ -331,6 +355,9 @@ export function SwipePage() {
           </div>
         </div>
       </div>
+
+      {/* Toast Notifications */}
+      <Toast toast={toast} onClose={closeToast} />
     </div>
   );
 } 
