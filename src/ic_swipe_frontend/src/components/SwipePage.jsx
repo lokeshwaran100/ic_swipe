@@ -270,7 +270,7 @@ export function SwipePage() {
       </div>
 
       {/* Progress Indicator */}
-      <div className="fixed top-20 left-0 right-0 z-40 px-4 md:px-6">
+      {/* <div className="fixed top-20 left-0 right-0 z-40 px-4 md:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="bg-black/20 backdrop-blur-lg rounded-full h-2 overflow-hidden">
             <div 
@@ -282,7 +282,7 @@ export function SwipePage() {
             {currentIndex + 1} of {tokens.length}
           </p>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div className="min-h-screen pt-32 pb-12 px-4 md:px-6 flex items-center justify-center">
