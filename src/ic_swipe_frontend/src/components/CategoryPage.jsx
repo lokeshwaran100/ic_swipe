@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
-import { Sparkles, Skull, Star, Rocket, Brain, Menu, Home } from 'lucide-react';
+import { Sparkles, Skull, Star, Rocket, Brain, Menu, Home, Wallet } from 'lucide-react';
 import { CategoryCard } from './CategoryCard';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const categories = [
   {
@@ -44,11 +44,11 @@ const categories = [
 
 export function CategoryPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleCategoryClick = (categoryId) => {
     console.log('Navigating to category:', categoryId);
-    // For now, just log. Later this will navigate to the swipe page
-    // TODO: Navigate to /categories/{categoryId} when swipe page is implemented
+    navigate(`/swipe/${categoryId}`);
   };
 
   return (
@@ -84,6 +84,12 @@ export function CategoryPage() {
               <Home className="w-4 h-4" />
               Home
             </Link>
+            <Link 
+              to="/portfolio"
+              className="text-gray-300 hover:text-white transition"
+            >
+              Portfolio
+            </Link>
             <button className="text-gray-300 hover:text-white transition">Profile</button>
             <button className="text-gray-300 hover:text-white transition">Settings</button>
           </div>
@@ -103,6 +109,12 @@ export function CategoryPage() {
               >
                 <Home className="w-4 h-4" />
                 Home
+              </Link>
+              <Link 
+                to="/portfolio"
+                className="text-gray-300 hover:text-white transition text-left"
+              >
+                Portfolio
               </Link>
               <button className="text-gray-300 hover:text-white transition text-left">Profile</button>
               <button className="text-gray-300 hover:text-white transition text-left">Settings</button>
@@ -154,14 +166,31 @@ export function CategoryPage() {
               <h3 className="text-xl font-bold text-white mb-3">
                 🚀 Ready to Start Swiping?
               </h3>
-              <p className="text-gray-400 text-sm md:text-base">
+              <p className="text-gray-400 text-sm md:text-base mb-4">
                 Each category contains carefully curated tokens from the Internet Computer ecosystem. 
                 Swipe right to invest, left to pass, and build your perfect ICP portfolio.
               </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link
+                  to="/portfolio"
+                  className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-200"
+                >
+                  View Your Portfolio
+                </Link>
+              </div>
             </div>
           </motion.div>
         </div>
       </div>
+
+      {/* Floating Portfolio Button */}
+      <Link
+        to="/portfolio"
+        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white p-4 rounded-full shadow-lg hover:opacity-90 transition-all duration-200 hover:scale-110"
+        title="View Portfolio"
+      >
+        <Wallet className="w-6 h-6" />
+      </Link>
     </div>
   );
 } 

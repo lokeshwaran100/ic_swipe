@@ -4,6 +4,8 @@ import { ic_swipe_backend } from 'declarations/ic_swipe_backend';
 import { LoginComponent, useAuth } from './components/Login';
 import { OnboardingPage } from './components/OnboardingPage';
 import { CategoryPage } from './components/CategoryPage';
+import { PortfolioPage } from './components/PortfolioPage';
+import { SwipePage } from './components/SwipePage';
 
 // Create a separate component for the main app content
 function MainApp() {
@@ -59,6 +61,12 @@ function MainApp() {
                className="text-purple-600 hover:text-purple-800 font-medium"
              >
                Categories
+             </Link>
+             <Link
+               to="/portfolio"
+               className="text-purple-600 hover:text-purple-800 font-medium"
+             >
+               Portfolio
              </Link>
            </div>
          </div>
@@ -132,15 +140,21 @@ function HomePage() {
   return (
     <div>
       <OnboardingPage onContinue={handleOnboardingComplete} />
-      {/* Add a link to categories for testing */}
-      <div className="fixed bottom-4 right-4">
-        <Link 
-          to="/categories"
-          className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all duration-200 shadow-lg"
-        >
-          Browse Categories
-        </Link>
-      </div>
+             {/* Add links for testing */}
+       <div className="fixed bottom-4 right-4 flex flex-col gap-2">
+         <Link 
+           to="/categories"
+           className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all duration-200 shadow-lg text-center"
+         >
+           Browse Categories
+         </Link>
+         <Link 
+           to="/portfolio"
+           className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all duration-200 shadow-lg text-center"
+         >
+           View Portfolio
+         </Link>
+       </div>
     </div>
   );
 }
@@ -152,6 +166,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/categories" element={<CategoryPage />} />
+        <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/swipe/:category" element={<SwipePage />} />
         <Route path="/app" element={<MainApp />} />
       </Routes>
     </Router>
