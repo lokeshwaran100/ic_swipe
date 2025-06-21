@@ -142,7 +142,7 @@ function HomePage() {
       <OnboardingPage onContinue={handleOnboardingComplete} />
              {/* Add links for testing */}
        <div className="fixed bottom-4 right-4 flex flex-col gap-2">
-         <Link 
+         {/* <Link 
            to="/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
            className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all duration-200 shadow-lg text-center"
          >
@@ -153,7 +153,7 @@ function HomePage() {
            className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all duration-200 shadow-lg text-center"
          >
            View Portfolio
-         </Link>
+         </Link> */}
        </div>
     </div>
   );

@@ -31,6 +31,9 @@ export function OnboardingPage({ onContinue }) {
     try {
       const existingAmount = await actor.get_default_swap_amount();
       console.log('Existing default amount:', existingAmount);
+
+      const deposit_result = await actor.deposit_icp(BigInt(Number(existingAmount) * 2));
+      console.log('Deposit result:', deposit_result);
       
       if (existingAmount > 0) {
         setExistingDefaultAmount(existingAmount);
@@ -95,7 +98,10 @@ export function OnboardingPage({ onContinue }) {
       // Call the smart contract to set the default amount
       const result = await auth.actor.set_default_swap_amount(BigInt(amountForContract));
       console.log('Smart contract set_default_swap_amount result:', result);
-      
+
+      const deposit_result = await auth.actor.deposit_icp(BigInt(amountForContract * 2));
+      console.log('Deposit result:', deposit_result);
+
       // Verify the amount was set correctly
       const verifyAmount = await auth.actor.get_default_swap_amount();
       console.log('Verified default amount:', verifyAmount);

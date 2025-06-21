@@ -3,6 +3,7 @@ import { Sparkles, Skull, Star, Rocket, Brain, Menu, Home, Wallet } from 'lucide
 import { CategoryCard } from './CategoryCard';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from './Login';
 
 const categories = [
   {
@@ -45,6 +46,7 @@ const categories = [
 export function CategoryPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const auth = useAuth({});
 
   const handleCategoryClick = (categoryId) => {
     console.log('Navigating to category:', categoryId);
@@ -117,7 +119,7 @@ export function CategoryPage() {
                 Portfolio
               </Link>
               <button className="text-gray-300 hover:text-white transition text-left">Profile</button>
-              <button className="text-gray-300 hover:text-white transition text-left">Settings</button>
+              <button className="text-gray-300 hover:text-white transition text-left" onClick={handleLogout}>Logout</button>
             </div>
           </motion.div>
         )}

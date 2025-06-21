@@ -283,7 +283,7 @@ export function SwipePage() {
       const swapResult = await auth.actor.swap_icp_to_token(tokenSymbol, BigInt(defaultSwapAmount));
       console.log('Swap result:', swapResult);
       
-             if (swapResult.success) {
+         if (swapResult.success) {
          // Update local ICP balance
          setIcpBalance(Number(swapResult.new_icp_balance));
          
