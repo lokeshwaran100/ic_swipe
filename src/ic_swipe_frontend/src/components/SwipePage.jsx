@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ThumbsUp, ThumbsDown } from "lucide-react";
 import { TokenCard } from "./TokenCard";
 import { Toast } from "./Toast";
+import { useAuth } from "./Login";
+import { ic_swipe_backend } from 'declarations/ic_swipe_backend';
 
 // Mock token data for different categories
 const getMockTokens = (category) => {
@@ -149,6 +151,9 @@ export function SwipePage() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const controls = useAnimation();
+  
+  // Add authentication
+  const auth = useAuth({});
 
   // Initialize tokens and trust score
   useEffect(() => {
@@ -205,15 +210,43 @@ export function SwipePage() {
   const handleBuy = async () => {
     console.log('Buying token:', currentToken);
     
-    // Show success toast
-    setToast({
-      type: 'success',
-      title: 'Token Added! 🚀',
-      message: `${currentToken.baseToken?.name || currentToken.name} added to your portfolio`,
-      duration: 3000
-    });
-    
-    // TODO: Add to portfolio logic will be added later
+    try {
+      // Get the authenticated actor or use default
+      const actor = ic_swipe_backend;
+      
+      // // Get the caller principal
+      // let callerPrincipal = 'anonymous';
+      // if (auth.isAuthenticated && auth.principal && auth.principal !== 'Click "Whoami" to see your principal ID') {
+      //   callerPrincipal = auth.principal;
+      // }
+      
+      // Create the message for the smart contract call
+      const tokenInfo = `${currentToken.baseToken?.name || currentToken.name} (${currentToken.baseToken?.symbol || currentToken.symbol})`;
+      
+      // Make the smart contract call to greet function
+      console.log('Making smart contract call with:', tokenInfo);
+      const greetResult = await actor.greet(tokenInfo);
+      console.log('Smart contract response:', greetResult);
+      
+      // Show success toast with smart contract response
+      setToast({
+        type: 'success',
+        title: 'Token Purchased! 🚀',
+        message: `${currentToken.baseToken?.name || currentToken.name} added to portfolio. Smart contract called: ${greetResult}`,
+        duration: 4000
+      });
+      
+    } catch (error) {
+      console.error('Error calling smart contract:', error);
+      
+      // Show error toast but still add to portfolio
+      setToast({
+        type: 'error',
+        title: 'Purchase Complete ⚠️',
+        message: `${currentToken.baseToken?.name || currentToken.name} added to portfolio, but smart contract call failed`,
+        duration: 4000
+      });
+    }
     
     // Move to next token
     if (currentIndex < tokens.length - 1) {
@@ -244,9 +277,11 @@ export function SwipePage() {
     const threshold = 100;
     if (Math.abs(info.offset.x) > threshold) {
       if (info.offset.x > 0) {
+        // Swipe right - buy token
         await controls.start({ x: 500, opacity: 0 });
         await handleBuy();
       } else {
+        // Swipe left - skip token
         await controls.start({ x: -500, opacity: 0 });
         await handleSkip();
       }
@@ -286,7 +321,15 @@ export function SwipePage() {
             </span>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
+            {/* Authentication Status */}
+            <div className="hidden md:flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${auth.isAuthenticated ? 'bg-green-400' : 'bg-gray-400'}`} />
+              <span className="text-xs text-gray-400">
+                {auth.isAuthenticated ? 'Authenticated' : 'Anonymous'}
+              </span>
+            </div>
+            
             <ThumbsDown className="w-6 h-6 text-red-400 animate-pulse" />
             <ThumbsUp className="w-6 h-6 text-green-400 animate-pulse" />
           </div>

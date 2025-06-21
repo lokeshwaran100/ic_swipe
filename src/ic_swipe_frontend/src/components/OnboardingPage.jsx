@@ -46,6 +46,7 @@ export function OnboardingPage({ onContinue }) {
         principal: auth.principal,
         authenticated: true
       });
+      navigate(`/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai`);	
     }
   };
 
