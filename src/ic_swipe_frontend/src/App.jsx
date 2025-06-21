@@ -57,13 +57,13 @@ function MainApp() {
            </div>
            <div className="flex gap-3">
              <Link
-               to="/categories"
+               to="/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
                className="text-purple-600 hover:text-purple-800 font-medium"
              >
                Categories
              </Link>
              <Link
-               to="/portfolio"
+               to="/portfolio?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
                className="text-purple-600 hover:text-purple-800 font-medium"
              >
                Portfolio
@@ -143,13 +143,13 @@ function HomePage() {
              {/* Add links for testing */}
        <div className="fixed bottom-4 right-4 flex flex-col gap-2">
          <Link 
-           to="/categories"
+           to="/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
            className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all duration-200 shadow-lg text-center"
          >
            Browse Categories
          </Link>
          <Link 
-           to="/portfolio"
+           to="/portfolio?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
            className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all duration-200 shadow-lg text-center"
          >
            View Portfolio

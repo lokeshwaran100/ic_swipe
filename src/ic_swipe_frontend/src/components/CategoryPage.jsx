@@ -48,7 +48,7 @@ export function CategoryPage() {
 
   const handleCategoryClick = (categoryId) => {
     console.log('Navigating to category:', categoryId);
-    navigate(`/swipe/${categoryId}`);
+    navigate(`/swipe/${categoryId}?canisterId=be2us-64aaa-aaaaa-qaabq-cai`);
   };
 
   return (
@@ -85,7 +85,7 @@ export function CategoryPage() {
               Home
             </Link>
             <Link 
-              to="/portfolio"
+              to="/portfolio?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
               className="text-gray-300 hover:text-white transition"
             >
               Portfolio
@@ -111,7 +111,7 @@ export function CategoryPage() {
                 Home
               </Link>
               <Link 
-                to="/portfolio"
+                to="/portfolio?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
                 className="text-gray-300 hover:text-white transition text-left"
               >
                 Portfolio
@@ -172,7 +172,7 @@ export function CategoryPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
-                  to="/portfolio"
+                  to="/portfolio?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
                   className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-200"
                 >
                   View Your Portfolio
@@ -185,7 +185,7 @@ export function CategoryPage() {
 
       {/* Floating Portfolio Button */}
       <Link
-        to="/portfolio"
+        to="/portfolio?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
         className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white p-4 rounded-full shadow-lg hover:opacity-90 transition-all duration-200 hover:scale-110"
         title="View Portfolio"
       >

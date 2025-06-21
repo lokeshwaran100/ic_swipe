@@ -77,7 +77,7 @@ export function PortfolioPage() {
               Home
             </Link>
             <Link 
-              to="/categories"
+              to="/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
               className="text-gray-300 hover:text-white transition"
             >
               Categories
@@ -102,7 +102,7 @@ export function PortfolioPage() {
                 Home
               </Link>
               <Link 
-                to="/categories"
+                to="/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
                 className="text-gray-300 hover:text-white transition text-left"
               >
                 Categories
@@ -206,7 +206,7 @@ export function PortfolioPage() {
                   Explore new tokens and expand your portfolio on the Internet Computer ecosystem.
                 </p>
                 <Link
-                  to="/categories"
+                  to="/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
                   className="inline-block bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-200"
                 >
                   Browse Categories

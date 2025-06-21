@@ -192,7 +192,7 @@ export function SwipePage() {
         <div className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-xl p-6 text-center max-w-md mx-4">
           <p className="text-gray-400">No more tokens to swipe!</p>
           <button
-            onClick={() => navigate('/categories')}
+            onClick={() => navigate('/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai')}
             className="mt-4 px-6 py-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-lg text-white font-medium hover:opacity-90 transition"
           >
             Back to Categories
