@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, LogIn, LogOut, Menu } from 'lucide-react';
 import { useAuth } from './Login';
+import { ic_swipe_backend } from 'declarations/ic_swipe_backend';
+import { useNavigate } from 'react-router-dom';
 
 export function OnboardingPage({ onContinue }) {
   const [defaultAmount, setDefaultAmount] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Use our ICP authentication hook
   const auth = useAuth({
@@ -38,7 +41,7 @@ export function OnboardingPage({ onContinue }) {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (auth.isAuthenticated && defaultAmount) {
       // Call the onContinue callback with the user data
       onContinue({
@@ -46,7 +49,9 @@ export function OnboardingPage({ onContinue }) {
         principal: auth.principal,
         authenticated: true
       });
-      navigate(`/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai`);	
+      const greetResult = await ic_swipe_backend.greet(`${defaultAmount} is set successfully`);
+      console.log('Smart contract response:', greetResult); 
+      navigate(`/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai`);
     }
   };
 
@@ -199,7 +204,7 @@ export function OnboardingPage({ onContinue }) {
                   disabled={!defaultAmount || parseFloat(defaultAmount) <= 0}
                   className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white rounded-lg p-3 md:p-4 hover:opacity-90 transition disabled:opacity-50 text-sm md:text-base"
                 >
-                  Get Started
+                  Set Amount
                   <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
               </div>
