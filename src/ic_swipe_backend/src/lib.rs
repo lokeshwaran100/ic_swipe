@@ -1,16 +1,19 @@
+// Core Types and Serialization
 use candid::{CandidType, Deserialize, Principal};
-use ic_cdk::api::caller;
-use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
-use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, Storable};
 use std::borrow::Cow;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
-use icrc_ledger_types::icrc1::account::Account;
-use icrc_ledger_types::icrc1::transfer::BlockIndex;
-use icrc_ledger_types::icrc2::transfer_from::{TransferFromArgs, TransferFromError};
-use serde::Serialize;
-use ic_cdk::api::id as canister_id;
+// Internet Computer APIs
+use ic_cdk::api::{caller, id as canister_id};
+
+// Ledger Types
+use ic_ledger_types::{AccountIdentifier, DEFAULT_SUBACCOUNT};
+
+// Stable Memory Structures
+use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
+use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, Storable};
+
 
 // Memory management for stable storage
 type Memory = VirtualMemory<DefaultMemoryImpl>;
@@ -176,7 +179,7 @@ pub fn get_default_swap_amount() -> u64 {
 
 /// Register an ICP deposit for the user
 #[ic_cdk::update]
-pub async fn deposit_icp(amount: u64) -> TransactionResult {
+pub fn deposit_icp(amount: u64) -> TransactionResult {
     if amount == 0 {
         return TransactionResult {
             success: false,
@@ -191,50 +194,6 @@ pub async fn deposit_icp(amount: u64) -> TransactionResult {
     user_data.icp_balance += amount;
     user_data.total_deposits += amount;
     update_user_data(caller, user_data.clone());
-
-    let canister_account = Account {
-        owner: canister_id(),
-        subaccount: None, // or Some([u8; 32]) if you want a specific subaccount
-    };
-
-    let transfer_from_args = TransferFromArgs {
-        from: Account::from(ic_cdk::caller()),
-        memo: None,
-        amount: amount.into(), // convert u64 to NumTokens if needed
-        spender_subaccount: None,
-        fee: None,
-        to: canister_account, // <-- use canister's own account here
-        created_at_time: None,
-    };
-
-    let call_result = ic_cdk::call::<(TransferFromArgs,), (Result<BlockIndex, TransferFromError>,)>(
-        Principal::from_text("ryjl3-tyaaa-aaaaa-aaaba-cai")
-            .expect("Could not decode the principal."),
-        "icrc2_transfer_from",
-        (transfer_from_args,),
-    )
-    .await;
-
-    let result = match call_result {
-        Ok((Ok(block_index),)) => TransactionResult {
-            success: true,
-            message: "Transferred the funds".to_string(),
-            new_icp_balance: 0,
-            new_token_balance: None,
-        },
-        Ok((Err(e),)) => TransactionResult {
-            success: true,
-            message: format!("ledger transfer error {:?}", e),
-            new_icp_balance: 0,
-            new_token_balance: None,
-        },
-        Err(e) => TransactionResult {
-            success: true,
-            message: format!("failed to call ledger: {:?}", e),
-            new_icp_balance: 0,
-            new_token_balance: None,
-        }
-    };
 
     TransactionResult {
         success: true,
@@ -375,19 +334,9 @@ pub fn get_all_users_count() -> u64 {
     })
 }
 
-/// Get caller's principal (for debugging)
 #[ic_cdk::query]
-pub fn whoami() -> String {
-    caller().to_text()
-}
-
-/// Legacy greet function for backward compatibility
-#[ic_cdk::query]
-pub fn greet(name: String) -> String {
-    let caller = caller();
-    let user_data = get_or_create_user_data(caller);
-    format!("Hello, {}! Your ICP balance: {} ICP, Default swap amount: {} ICP", 
-            name, user_data.icp_balance, user_data.default_swap_amount)
+fn get_canister_account() -> AccountIdentifier {
+    AccountIdentifier::new(&canister_id(), &DEFAULT_SUBACCOUNT)
 }
 
 // Export candid interface
