@@ -1,3 +1,28 @@
+type TransactionResult = record {
+  success : bool;
+  message : text;
+  new_icp_balance : nat64;
+  new_token_balance : opt nat64;
+};
+
+type UserPortfolio = record {
+  icp_balance : nat64;
+  default_swap_amount : nat64;
+  token_balances : vec record { text; nat64 };
+  total_deposits : nat64;
+  total_swaps : nat64;
+};
+
 service : {
-    "greet": (text) -> (text) query;
+  "set_default_swap_amount": (nat64) -> (nat64);
+  "get_default_swap_amount": () -> (nat64) query;
+  "deposit_icp": (nat64) -> (TransactionResult);
+  "get_user_icp_balance": () -> (nat64) query;
+  "swap_icp_to_token": (text, nat64) -> (TransactionResult);
+  "swap_token_to_icp": (text, nat64) -> (TransactionResult);
+  "get_user_portfolio": () -> (UserPortfolio) query;
+  "get_token_balance": (text) -> (nat64) query;
+  "get_all_users_count": () -> (nat64) query;
+  "whoami": () -> (text) query;
+  "greet": (text) -> (text) query;
 }
