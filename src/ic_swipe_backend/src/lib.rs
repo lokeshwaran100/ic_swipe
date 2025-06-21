@@ -1,10 +1,19 @@
+// Core Types and Serialization
 use candid::{CandidType, Deserialize, Principal};
-use ic_cdk::api::caller;
-use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
-use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, Storable};
 use std::borrow::Cow;
 use std::cell::RefCell;
 use std::collections::HashMap;
+
+// Internet Computer APIs
+use ic_cdk::api::{caller, id as canister_id};
+
+// Ledger Types
+use ic_ledger_types::{AccountIdentifier, DEFAULT_SUBACCOUNT};
+
+// Stable Memory Structures
+use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
+use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, Storable};
+
 
 // Memory management for stable storage
 type Memory = VirtualMemory<DefaultMemoryImpl>;
@@ -325,19 +334,9 @@ pub fn get_all_users_count() -> u64 {
     })
 }
 
-/// Get caller's principal (for debugging)
 #[ic_cdk::query]
-pub fn whoami() -> String {
-    caller().to_text()
-}
-
-/// Legacy greet function for backward compatibility
-#[ic_cdk::query]
-pub fn greet(name: String) -> String {
-    let caller = caller();
-    let user_data = get_or_create_user_data(caller);
-    format!("Hello, {}! Your ICP balance: {} ICP, Default swap amount: {} ICP", 
-            name, user_data.icp_balance, user_data.default_swap_amount)
+fn get_canister_account() -> AccountIdentifier {
+    AccountIdentifier::new(&canister_id(), &DEFAULT_SUBACCOUNT)
 }
 
 // Export candid interface
