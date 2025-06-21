@@ -3,20 +3,51 @@ import { motion } from 'framer-motion';
 import { ArrowRight, LogIn, LogOut, Menu } from 'lucide-react';
 import { useAuth } from './Login';
 import { ic_swipe_backend } from 'declarations/ic_swipe_backend';
+import { createActor } from 'declarations/ic_swipe_backend';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from './Toast';
 
 export function OnboardingPage({ onContinue }) {
   const [defaultAmount, setDefaultAmount] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSettingAmount, setIsSettingAmount] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [existingDefaultAmount, setExistingDefaultAmount] = useState(null);
   const navigate = useNavigate();
 
   // Use our ICP authentication hook
   const auth = useAuth({
-    onAuthChange: (authState) => {
+    onAuthChange: async (authState) => {
       console.log('Auth state changed:', authState);
+      if (authState.isAuthenticated && authState.actor) {
+        await checkExistingDefaultAmount(authState.actor);
+      }
     }
   });
+
+  // Check if user already has a default amount set
+  const checkExistingDefaultAmount = async (actor) => {
+    try {
+      const existingAmount = await actor.get_default_swap_amount();
+      console.log('Existing default amount:', existingAmount);
+      
+      if (existingAmount > 0) {
+        setExistingDefaultAmount(existingAmount);
+        // If user already has default amount set, redirect to categories
+        const canisterId = 'be2us-64aaa-aaaaa-qaabq-cai'; // Frontend canister ID
+        navigate(`/categories?canisterId=${canisterId}`);
+      }
+    } catch (error) {
+      console.error('Error checking existing default amount:', error);
+    }
+  };
+
+  // Show toast message
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+  };
 
   const handleSignIn = async () => {
     try {
@@ -42,16 +73,61 @@ export function OnboardingPage({ onContinue }) {
   };
 
   const handleContinue = async () => {
-    if (auth.isAuthenticated && defaultAmount) {
-      // Call the onContinue callback with the user data
-      onContinue({
-        defaultAmount,
-        principal: auth.principal,
-        authenticated: true
-      });
-      const greetResult = await ic_swipe_backend.greet(`${defaultAmount} is set successfully`);
-      console.log('Smart contract response:', greetResult); 
-      navigate(`/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai`);
+    if (!auth.isAuthenticated || !defaultAmount || !auth.actor) {
+      showToast('Please login and enter a valid amount', 'error');
+      return;
+    }
+
+    const amountInICP = parseFloat(defaultAmount);
+    if (amountInICP <= 0) {
+      showToast('Amount must be greater than 0', 'error');
+      return;
+    }
+
+    setIsSettingAmount(true);
+    
+    try {
+      // Convert to the format expected by the smart contract (multiply by 100 to avoid decimals)
+      const amountForContract = Math.round(amountInICP * 100);
+      
+      console.log('Setting default amount:', amountForContract);
+      
+      // Call the smart contract to set the default amount
+      const result = await auth.actor.set_default_swap_amount(amountForContract);
+      console.log('Smart contract set_default_swap_amount result:', result);
+      
+      // Verify the amount was set correctly
+      const verifyAmount = await auth.actor.get_default_swap_amount();
+      console.log('Verified default amount:', verifyAmount);
+      
+      if (verifyAmount === amountForContract) {
+        // Call the onContinue callback with the user data
+        onContinue({
+          defaultAmount: amountInICP,
+          principal: auth.principal,
+          authenticated: true
+        });
+        
+        // Also call greet function as a confirmation
+        const greetResult = await auth.actor.greet(`${amountInICP} ICP set as default amount`);
+        console.log('Smart contract greet response:', greetResult);
+        
+        showToast(`Default amount set to ${amountInICP} ICP successfully!`, 'success');
+        
+        // Navigate to categories page
+        const canisterId = 'be2us-64aaa-aaaaa-qaabq-cai'; // Frontend canister ID
+        setTimeout(() => {
+          navigate(`/categories?canisterId=${canisterId}`);
+        }, 1500);
+      } else {
+        throw new Error('Amount verification failed');
+      }
+      
+    } catch (error) {
+      console.error('Error setting default amount:', error);
+      showToast('Failed to set default amount. Please try again.', 'error');
+    } finally {
+      setIsSettingAmount(false);
     }
   };
 
@@ -184,6 +260,12 @@ export function OnboardingPage({ onContinue }) {
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                     Connected to Internet Computer
                   </div>
+                  {existingDefaultAmount && existingDefaultAmount > 0 && (
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      Default Amount: {(existingDefaultAmount / 100).toFixed(2)} ICP
+                    </div>
+                  )}
                 </div>
                 
                 <label className="block space-y-2">
@@ -201,11 +283,11 @@ export function OnboardingPage({ onContinue }) {
                 
                 <button
                   onClick={handleContinue}
-                  disabled={!defaultAmount || parseFloat(defaultAmount) <= 0}
+                  disabled={!defaultAmount || parseFloat(defaultAmount) <= 0 || isSettingAmount}
                   className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white rounded-lg p-3 md:p-4 hover:opacity-90 transition disabled:opacity-50 text-sm md:text-base"
                 >
-                  Set Amount
-                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+                  {isSettingAmount ? 'Setting Amount...' : 'Set Amount'}
+                  {!isSettingAmount && <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />}
                 </button>
               </div>
             )}
@@ -254,6 +336,15 @@ export function OnboardingPage({ onContinue }) {
           </motion.div>
         </div>
       </div>
+
+      {/* Toast notification */}
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ show: false, message: '', type: 'success' })}
+        />
+      )}
     </div>
   );
 } 
