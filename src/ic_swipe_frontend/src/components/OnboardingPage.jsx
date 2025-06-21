@@ -216,7 +216,7 @@ export function OnboardingPage({ onContinue }) {
           )}
 
           {/* Show welcome back message when user is authenticated and has default amount set */}
-          {auth.isAuthenticated && existingDefaultAmount && existingDefaultAmount > 0 && (
+          {/* {auth.isAuthenticated && existingDefaultAmount && existingDefaultAmount > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -258,7 +258,7 @@ export function OnboardingPage({ onContinue }) {
                 </div>
               </div>
             </motion.div>
-          )}
+          )} */}
         </motion.div>
 
         {/* Key Features Section */}

@@ -6,6 +6,7 @@ import { OnboardingPage } from './components/OnboardingPage';
 import { CategoryPage } from './components/CategoryPage';
 import { PortfolioPage } from './components/PortfolioPage';
 import { SwipePage } from './components/SwipePage';
+import { NeuralHuntPage } from './components/NeuralHuntPage';
 
 // Create a separate component for the main app content
 function MainApp() {
@@ -168,6 +169,7 @@ function App() {
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/swipe/:category" element={<SwipePage />} />
+        <Route path="/neural-hunt" element={<NeuralHuntPage />} />
         <Route path="/app" element={<MainApp />} />
       </Routes>
     </Router>
