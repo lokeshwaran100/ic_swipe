@@ -193,6 +193,28 @@ export function PortfolioPage() {
     setToast(null);
   };
 
+  // Handle sell events from PortfolioCard
+  const handleSell = async (sellEvent) => {
+    setToast(sellEvent);
+    
+    // If sale was successful, refresh portfolio data
+    if (sellEvent.refreshNeeded) {
+      setTimeout(() => {
+        fetchPortfolioData(false);
+      }, 1000); // Small delay to let the transaction settle
+    }
+  };
+
+  // Handle buy more events from PortfolioCard
+  const handleBuyMore = (token) => {
+    setToast({
+      type: 'info',
+      title: 'Buy More Tokens',
+      message: `To buy more ${token.symbol}, use the swipe feature in the categories section`,
+      duration: 4000
+    });
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -381,7 +403,7 @@ export function PortfolioPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <PortfolioCard token={token} />
+                    <PortfolioCard token={token} onSell={handleSell} onBuyMore={handleBuyMore} />
                   </motion.div>
                 ))}
               </div>
