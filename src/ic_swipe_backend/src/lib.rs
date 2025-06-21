@@ -9,7 +9,7 @@ use std::collections::HashMap;
 // Memory management for stable storage
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 type UserDataMap = StableBTreeMap<Principal, UserData, Memory>;
-type UserTokenBalancesMap = StableBTreeMap<(Principal, String), u64, Memory>;
+type UserTokenBalancesMap = StableBTreeMap<String, u64, Memory>; // Use composite key as String
 
 thread_local! {
     // Memory manager for stable storage
@@ -109,33 +109,38 @@ fn update_user_data(principal: Principal, data: UserData) {
 
 // Helper function to get user token balance
 fn get_user_token_balance(principal: Principal, token_id: &str) -> u64 {
+    let composite_key = format!("{}:{}", principal.to_text(), token_id);
     USER_TOKEN_BALANCES.with(|balances| {
         let balances_map = balances.borrow();
-        balances_map.get(&(principal, token_id.to_string())).unwrap_or(0)
+        balances_map.get(&composite_key).unwrap_or(0)
     })
 }
 
 // Helper function to update user token balance
 fn update_user_token_balance(principal: Principal, token_id: &str, balance: u64) {
+    let composite_key = format!("{}:{}", principal.to_text(), token_id);
     USER_TOKEN_BALANCES.with(|balances| {
         let mut balances_map = balances.borrow_mut();
         if balance > 0 {
-            balances_map.insert((principal, token_id.to_string()), balance);
+            balances_map.insert(composite_key, balance);
         } else {
-            balances_map.remove(&(principal, token_id.to_string()));
+            balances_map.remove(&composite_key);
         }
     });
 }
 
 // Helper function to get all user token balances
 fn get_all_user_token_balances(principal: Principal) -> HashMap<String, u64> {
+    let principal_prefix = format!("{}:", principal.to_text());
     USER_TOKEN_BALANCES.with(|balances| {
         let balances_map = balances.borrow();
         let mut user_tokens = HashMap::new();
         
-        for ((user_principal, token_id), balance) in balances_map.iter() {
-            if user_principal == principal {
-                user_tokens.insert(token_id, balance);
+        for (composite_key, balance) in balances_map.iter() {
+            if composite_key.starts_with(&principal_prefix) {
+                if let Some(token_id) = composite_key.strip_prefix(&principal_prefix) {
+                    user_tokens.insert(token_id.to_string(), balance);
+                }
             }
         }
         
