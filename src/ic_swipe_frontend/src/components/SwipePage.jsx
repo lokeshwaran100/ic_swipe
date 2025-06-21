@@ -150,6 +150,9 @@ export function SwipePage() {
   const [trustScore, setTrustScore] = useState(0);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
+  const [defaultSwapAmount, setDefaultSwapAmount] = useState(0);
+  const [isSwapping, setIsSwapping] = useState(false);
+  const [icpBalance, setIcpBalance] = useState(0);
   const controls = useAnimation();
   
   // Add authentication
@@ -162,6 +165,28 @@ export function SwipePage() {
     setTrustScore(Math.floor(Math.random() * 60) + 40); // Random trust score 40-100
     setLoading(false);
   }, [category]);
+
+  // Get user's default swap amount and ICP balance when authenticated
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (auth.isAuthenticated && auth.actor) {
+        try {
+          const [amount, balance] = await Promise.all([
+            auth.actor.get_default_swap_amount(),
+            auth.actor.get_user_icp_balance()
+          ]);
+          console.log('Default swap amount:', amount);
+          console.log('ICP balance:', balance);
+          setDefaultSwapAmount(Number(amount));
+          setIcpBalance(Number(balance));
+        } catch (error) {
+          console.error('Error getting user data:', error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [auth.isAuthenticated, auth.actor]);
 
   // Close toast function
   const closeToast = () => {
@@ -208,44 +233,89 @@ export function SwipePage() {
   }
 
   const handleBuy = async () => {
-    console.log('Buying token:', currentToken);
-    
-    try {
-      // Get the authenticated actor or use default
-      const actor = ic_swipe_backend;
-      
-      // // Get the caller principal
-      // let callerPrincipal = 'anonymous';
-      // if (auth.isAuthenticated && auth.principal && auth.principal !== 'Click "Whoami" to see your principal ID') {
-      //   callerPrincipal = auth.principal;
-      // }
-      
-      // Create the message for the smart contract call
-      const tokenInfo = `${currentToken.baseToken?.name || currentToken.name} (${currentToken.baseToken?.symbol || currentToken.symbol})`;
-      
-      // Make the smart contract call to greet function
-      console.log('Making smart contract call with:', tokenInfo);
-      const greetResult = await actor.greet(tokenInfo);
-      console.log('Smart contract response:', greetResult);
-      
-      // Show success toast with smart contract response
-      setToast({
-        type: 'success',
-        title: 'Token Purchased! 🚀',
-        message: `${currentToken.baseToken?.name || currentToken.name} added to portfolio. Smart contract called: ${greetResult}`,
-        duration: 4000
-      });
-      
-    } catch (error) {
-      console.error('Error calling smart contract:', error);
-      
-      // Show error toast but still add to portfolio
+    // Check if user is authenticated
+    if (!auth.isAuthenticated || !auth.actor) {
       setToast({
         type: 'error',
-        title: 'Purchase Complete ⚠️',
-        message: `${currentToken.baseToken?.name || currentToken.name} added to portfolio, but smart contract call failed`,
+        title: 'Authentication Required',
+        message: 'Please login with Internet Identity to purchase tokens',
         duration: 4000
       });
+      return;
+    }
+
+    // Check if default swap amount is set
+    if (!defaultSwapAmount || defaultSwapAmount <= 0) {
+      setToast({
+        type: 'error',
+        title: 'Default Amount Not Set',
+        message: 'Please set your default swap amount in the onboarding page',
+        duration: 4000
+      });
+      return;
+    }
+
+    // Check if user has sufficient ICP balance
+    if (icpBalance < defaultSwapAmount) {
+      setToast({
+        type: 'error',
+        title: 'Insufficient Balance',
+        message: `You need ${(defaultSwapAmount / 100).toFixed(2)} ICP but only have ${(icpBalance / 100).toFixed(2)} ICP. Please deposit more ICP.`,
+        duration: 5000
+      });
+      return;
+    }
+
+    setIsSwapping(true);
+    console.log('Buying token:', currentToken);
+    console.log('Using default swap amount:', defaultSwapAmount);
+    
+    try {
+      const tokenSymbol = currentToken.baseToken?.symbol || currentToken.symbol;
+      const tokenName = currentToken.baseToken?.name || currentToken.name;
+      
+      console.log('Making swap_icp_to_token call with:', {
+        tokenSymbol,
+        amount: defaultSwapAmount
+      });
+      
+      // Call the smart contract swap function
+      const swapResult = await auth.actor.swap_icp_to_token(tokenSymbol, BigInt(defaultSwapAmount));
+      console.log('Swap result:', swapResult);
+      
+             if (swapResult.success) {
+         // Update local ICP balance
+         setIcpBalance(Number(swapResult.new_icp_balance));
+         
+         // Show success toast
+         setToast({
+           type: 'success',
+           title: 'Token Purchased! 🚀',
+           message: `Successfully swapped ${(defaultSwapAmount / 100).toFixed(2)} ICP for ${tokenName}. New ICP balance: ${(Number(swapResult.new_icp_balance) / 100).toFixed(2)}`,
+           duration: 5000
+         });
+       } else {
+        // Show error toast with backend message
+        setToast({
+          type: 'error',
+          title: 'Swap Failed',
+          message: swapResult.message || 'Failed to swap tokens',
+          duration: 4000
+        });
+      }
+      
+    } catch (error) {
+      console.error('Error calling swap_icp_to_token:', error);
+      
+      // Show error toast
+      setToast({
+        type: 'error',
+        title: 'Swap Error',
+        message: 'Failed to execute swap. Please try again.',
+        duration: 4000
+      });
+    } finally {
+      setIsSwapping(false);
     }
     
     // Move to next token
@@ -323,11 +393,29 @@ export function SwipePage() {
 
           <div className="flex items-center gap-4">
             {/* Authentication Status */}
-            <div className="hidden md:flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${auth.isAuthenticated ? 'bg-green-400' : 'bg-gray-400'}`} />
-              <span className="text-xs text-gray-400">
-                {auth.isAuthenticated ? 'Authenticated' : 'Anonymous'}
-              </span>
+            <div className="hidden md:flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${auth.isAuthenticated ? 'bg-green-400' : 'bg-gray-400'}`} />
+                <span className="text-xs text-gray-400">
+                  {auth.isAuthenticated ? 'Authenticated' : 'Anonymous'}
+                </span>
+              </div>
+              {auth.isAuthenticated && (
+                <div className="flex items-center gap-2">
+                  {defaultSwapAmount > 0 && (
+                    <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/20 rounded-lg">
+                      <span className="text-xs text-blue-400">
+                        Amount: {(defaultSwapAmount / 100).toFixed(2)} ICP
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 px-2 py-1 bg-green-500/20 rounded-lg">
+                    <span className="text-xs text-green-400">
+                      Balance: {(icpBalance / 100).toFixed(2)} ICP
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
             
             <ThumbsDown className="w-6 h-6 text-red-400 animate-pulse" />
@@ -372,8 +460,31 @@ export function SwipePage() {
             </div>
 
             {/* Mobile Instructions */}
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 md:hidden text-gray-400 text-sm whitespace-nowrap">
-              Swipe left to skip, right to buy
+            <div className="absolute -top-16 left-1/2 -translate-x-1/2 md:hidden flex flex-col items-center gap-2">
+              <div className="text-gray-400 text-sm whitespace-nowrap">
+                Swipe left to skip, right to buy
+              </div>
+              {auth.isAuthenticated && (
+                <div className="flex flex-col items-center gap-1">
+                  {defaultSwapAmount > 0 && (
+                    <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/20 rounded-lg">
+                      <span className="text-xs text-blue-400">
+                        Amount: {(defaultSwapAmount / 100).toFixed(2)} ICP
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 px-2 py-1 bg-green-500/20 rounded-lg">
+                    <span className="text-xs text-green-400">
+                      Balance: {(icpBalance / 100).toFixed(2)} ICP
+                    </span>
+                  </div>
+                </div>
+              )}
+              {!auth.isAuthenticated && (
+                <div className="text-orange-400 text-xs">
+                  Login required to purchase
+                </div>
+              )}
             </div>
 
             <TokenCard token={currentToken} trustScore={trustScore} />
@@ -383,17 +494,19 @@ export function SwipePage() {
           <div className="flex justify-center gap-6 mt-8">
             <button
               onClick={handleSkip}
-              className="flex items-center gap-2 px-6 py-3 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded-xl text-red-400 transition-all"
+              disabled={isSwapping}
+              className="flex items-center gap-2 px-6 py-3 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded-xl text-red-400 transition-all disabled:opacity-50"
             >
               <ThumbsDown className="w-5 h-5" />
               <span>Skip</span>
             </button>
             <button
               onClick={handleBuy}
-              className="flex items-center gap-2 px-6 py-3 bg-green-500/20 hover:bg-green-500/30 border border-green-500/30 rounded-xl text-green-400 transition-all"
+              disabled={isSwapping}
+              className="flex items-center gap-2 px-6 py-3 bg-green-500/20 hover:bg-green-500/30 border border-green-500/30 rounded-xl text-green-400 transition-all disabled:opacity-50"
             >
               <ThumbsUp className="w-5 h-5" />
-              <span>Buy</span>
+              <span>{isSwapping ? 'Swapping...' : 'Buy'}</span>
             </button>
           </div>
         </div>

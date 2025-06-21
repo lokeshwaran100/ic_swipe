@@ -122,7 +122,7 @@ function MainApp() {
             >
               Click Me!
             </button>
-          </form>
+      </form>
           <section id="greeting" className="mt-4 text-lg text-gray-700">{greeting}</section>
         </div>
       </div>

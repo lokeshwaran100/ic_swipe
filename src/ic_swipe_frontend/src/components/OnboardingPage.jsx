@@ -93,7 +93,7 @@ export function OnboardingPage({ onContinue }) {
       console.log('Setting default amount:', amountForContract);
       
       // Call the smart contract to set the default amount
-      const result = await auth.actor.set_default_swap_amount(amountForContract);
+      const result = await auth.actor.set_default_swap_amount(BigInt(amountForContract));
       console.log('Smart contract set_default_swap_amount result:', result);
       
       // Verify the amount was set correctly
