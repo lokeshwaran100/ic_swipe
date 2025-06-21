@@ -335,8 +335,8 @@ pub fn get_all_users_count() -> u64 {
 }
 
 #[ic_cdk::query]
-fn get_canister_account() -> AccountIdentifier {
-    AccountIdentifier::new(&canister_id(), &DEFAULT_SUBACCOUNT)
+pub fn get_canister_account() -> String {
+    AccountIdentifier::new(&canister_id(), &DEFAULT_SUBACCOUNT).to_string()
 }
 
 // Export candid interface

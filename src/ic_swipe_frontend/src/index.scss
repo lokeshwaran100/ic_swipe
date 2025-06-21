@@ -1,41 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles that complement Tailwind */
 body {
-  font-family: sans-serif;
-  font-size: 1.5rem;
+  @apply font-sans text-2xl;
 }
 
 img {
-  max-width: 50vw;
-  max-height: 25vw;
-  display: block;
-  margin: auto;
+  @apply max-w-[50vw] max-h-[25vh] block mx-auto;
 }
 
 form {
-  display: flex;
-  justify-content: center;
-  gap: 0.5em;
-  flex-flow: row wrap;
-  max-width: 40vw;
-  margin: auto;
-  align-items: baseline;
+  @apply flex justify-center gap-2 flex-wrap max-w-[40vw] mx-auto items-baseline;
 }
 
 button[type="submit"] {
-  padding: 5px 20px;
-  margin: 10px auto;
-  float: right;
+  @apply px-5 py-1 my-2 ml-auto;
 }
 
 #greeting {
-  margin: 10px auto;
-  padding: 10px 60px;
-  border: 1px solid #222;
+  @apply my-2 px-16 py-2 border border-gray-800;
 }
 
 #greeting:empty {
-  display: none;
+  @apply hidden;
 }
 
 .browser-warning {
-  display: none;
+  @apply hidden;
 }
