@@ -6,6 +6,7 @@ import { TokenCard } from "./TokenCard";
 import { Toast } from "./Toast";
 import { useAuth } from "./Login";
 import { ic_swipe_backend } from 'declarations/ic_swipe_backend';
+import { Navbar } from './Navbar';
 
 // Mock token data for different categories
 const getMockTokens = (category) => {
@@ -374,42 +375,39 @@ export function SwipePage() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#001F3F] via-[#1A1A2E] to-[#2D1B3D] relative">
-      {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 px-4 py-4 md:px-6 bg-black/20 backdrop-blur-lg border-b border-white/10">
+      {/* Unified Navbar */}
+      <Navbar />
+
+      {/* Category Header with Back Button */}
+      <div className="fixed top-20 left-0 right-0 z-40 px-4 py-3 md:px-6 bg-black/10 backdrop-blur-sm border-b border-white/5">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-300 hover:text-white transition"
+            className="flex items-center gap-2 text-gray-300 hover:text-white transition-all duration-200 px-3 py-2 rounded-lg hover:bg-white/10"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="hidden md:inline">Back</span>
+            <span className="hidden md:inline">Back to Categories</span>
           </button>
 
           <div className="flex items-center gap-2">
             <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-              IcSwipe - {getCategoryTitle(category)}
+              {getCategoryTitle(category)}
             </span>
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Authentication Status */}
+            {/* Authentication Status & Balance Info */}
             <div className="hidden md:flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${auth.isAuthenticated ? 'bg-green-400' : 'bg-gray-400'}`} />
-                <span className="text-xs text-gray-400">
-                  {auth.isAuthenticated ? 'Authenticated' : 'Anonymous'}
-                </span>
-              </div>
               {auth.isAuthenticated && (
                 <div className="flex items-center gap-2">
                   {defaultSwapAmount > 0 && (
-                    <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/20 rounded-lg">
+                    <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/20 rounded-lg border border-blue-500/30">
                       <span className="text-xs text-blue-400">
                         Amount: {(defaultSwapAmount / 100).toFixed(2)} ICP
                       </span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2 px-2 py-1 bg-green-500/20 rounded-lg">
+                  <div className="flex items-center gap-2 px-2 py-1 bg-green-500/20 rounded-lg border border-green-500/30">
                     <span className="text-xs text-green-400">
                       Balance: {(icpBalance / 100).toFixed(2)} ICP
                     </span>
@@ -440,7 +438,7 @@ export function SwipePage() {
       </div> */}
 
       {/* Main Content */}
-      <div className="min-h-screen pt-32 pb-12 px-4 md:px-6 flex items-center justify-center">
+      <div className="min-h-screen pt-40 pb-12 px-4 md:px-6 flex items-center justify-center">
         <div className="w-full max-w-lg mx-auto">
           <motion.div
             drag="x"
@@ -460,20 +458,20 @@ export function SwipePage() {
             </div>
 
             {/* Mobile Instructions */}
-            <div className="absolute -top-16 left-1/2 -translate-x-1/2 md:hidden flex flex-col items-center gap-2">
+            <div className="absolute -top-20 left-1/2 -translate-x-1/2 md:hidden flex flex-col items-center gap-2">
               <div className="text-gray-400 text-sm whitespace-nowrap">
                 Swipe left to skip, right to buy
               </div>
               {auth.isAuthenticated && (
                 <div className="flex flex-col items-center gap-1">
                   {defaultSwapAmount > 0 && (
-                    <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/20 rounded-lg">
+                    <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/20 rounded-lg border border-blue-500/30">
                       <span className="text-xs text-blue-400">
                         Amount: {(defaultSwapAmount / 100).toFixed(2)} ICP
                       </span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2 px-2 py-1 bg-green-500/20 rounded-lg">
+                  <div className="flex items-center gap-2 px-2 py-1 bg-green-500/20 rounded-lg border border-green-500/30">
                     <span className="text-xs text-green-400">
                       Balance: {(icpBalance / 100).toFixed(2)} ICP
                     </span>

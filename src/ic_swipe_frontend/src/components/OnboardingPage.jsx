@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, LogIn, LogOut, Menu } from 'lucide-react';
+import { ArrowRight, LogIn, LogOut } from 'lucide-react';
 import { useAuth } from './Login';
 import { ic_swipe_backend } from 'declarations/ic_swipe_backend';
 import { createActor } from 'declarations/ic_swipe_backend';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from './Toast';
+import { Navbar } from './Navbar';
 
 export function OnboardingPage({ onContinue }) {
   const [defaultAmount, setDefaultAmount] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSettingAmount, setIsSettingAmount] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -33,13 +33,14 @@ export function OnboardingPage({ onContinue }) {
       console.log('Existing default amount:', existingAmount);
 
       const deposit_result = await actor.deposit_icp(BigInt(Number(existingAmount) * 2));
-      console.log('Deposit result:', deposit_result);
+      console.
+      log('Deposit result:', deposit_result);
       
       if (existingAmount > 0) {
         setExistingDefaultAmount(existingAmount);
         // If user already has default amount set, redirect to categories
         const canisterId = 'be2us-64aaa-aaaaa-qaabq-cai'; // Frontend canister ID
-        navigate(`/categories?canisterId=${canisterId}`);
+        // navigate(`/categories?canisterId=${canisterId}`);
       }
     } catch (error) {
       console.error('Error checking existing default amount:', error);
@@ -139,85 +140,8 @@ export function OnboardingPage({ onContinue }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative">
-      {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 px-4 py-4 md:px-6 bg-black/20 backdrop-blur-lg border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <img 
-              src="/ICSwipe.png" 
-              alt="IcSwipe Logo" 
-              className="w-8 h-8 md:w-10 md:h-10"
-            />
-            <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-              IcSwipe
-            </span>
-          </div>
-          
-          {/* Mobile Menu Button */}
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-gray-300 hover:text-white transition"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex gap-4 items-center">
-            {auth.isAuthenticated ? (
-              <>
-                <span className="text-gray-300 text-sm truncate max-w-[200px]">
-                  {auth.principal !== 'Click "Whoami" to see your principal ID' ? auth.principal : 'Authenticated'}
-                </span>
-                <button 
-                  onClick={handleLogout}
-                  disabled={isLoading}
-                  className="flex items-center gap-2 text-gray-300 hover:text-white transition"
-                >
-                  <LogOut className="w-4 h-4" />
-                  {isLoading ? 'Logging out...' : 'Logout'}
-                </button>
-              </>
-            ) : (
-              <>
-                <button className="text-gray-300 hover:text-white transition">About</button>
-                <button className="text-gray-300 hover:text-white transition">Features</button>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="absolute top-full left-0 right-0 bg-black/90 backdrop-blur-lg md:hidden border-b border-white/10"
-          >
-            <div className="flex flex-col p-4 gap-4">
-              {auth.isAuthenticated ? (
-                <>
-                  <span className="text-gray-300 text-sm">
-                    {auth.principal !== 'Click "Whoami" to see your principal ID' ? auth.principal : 'Authenticated'}
-                  </span>
-                  <button 
-                    onClick={handleLogout}
-                    disabled={isLoading}
-                    className="flex items-center gap-2 text-gray-300 hover:text-white transition text-left"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    {isLoading ? 'Logging out...' : 'Logout'}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button className="text-gray-300 hover:text-white transition text-left">About</button>
-                  <button className="text-gray-300 hover:text-white transition text-left">Features</button>
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </div>
+      {/* Unified Navbar */}
+      <Navbar />
 
       {/* Main Content */}
       <div className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 pb-12 md:px-6">
