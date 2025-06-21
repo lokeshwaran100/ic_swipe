@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { PortfolioCard } from "./PortfolioCard";
-import { Wallet } from "lucide-react";
+import { Wallet, Plus, QrCode } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { useAuth } from "./Login";
 import { Toast } from "./Toast";
 import { Navbar } from "./Navbar";
+import { DepositModal } from "./DepositModal";
 
 export function PortfolioPage() {
   const [inputValue, setInputValue] = useState("");
@@ -14,6 +15,7 @@ export function PortfolioPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [toast, setToast] = useState(null);
   const [isUpdatingAmount, setIsUpdatingAmount] = useState(false);
+  const [showDepositModal, setShowDepositModal] = useState(false);
   
   // Add authentication
   const auth = useAuth({});
@@ -82,7 +84,7 @@ export function PortfolioPage() {
             priceChange: getMockPriceChange(symbol),
             amount: amount.toString(),
             value: value.toString(),
-            image: getTokenImage(symbol)
+            svgIcon: getTokenSVG(symbol)
           };
         })
       };
@@ -119,16 +121,18 @@ export function PortfolioPage() {
     return names[symbol] || symbol;
   };
 
-  const getTokenImage = (symbol) => {
-    const images = {
-      'DOGE': 'https://cryptologos.cc/logos/dogecoin-doge-logo.png',
-      'SHIB': 'https://cryptologos.cc/logos/shiba-inu-shib-logo.png',
-      'PEPE': 'https://assets.coingecko.com/coins/images/29850/large/pepe-token.jpeg',
-      'FLOKI': 'https://cryptologos.cc/logos/floki-inu-floki-logo.png',
-      'BABYDOGE': 'https://assets.coingecko.com/coins/images/16125/large/babydoge.jpg',
-      'ICP': '/ICSwipe.png'
+  const getTokenSVG = (symbol) => {
+    const svgMappings = {
+      'DOGE': 'DOGE',
+      'SHIB': 'SHIB', 
+      'PEPE': 'PEPE',
+      'FLOKI': 'TOKEN1',
+      'BABYDOGE': 'TOKEN2',
+      'BTC': 'BTC',
+      'ETH': 'ETH',
+      'ICP': 'TOKEN5'
     };
-    return images[symbol] || null;
+    return svgMappings[symbol] || 'DEFAULT';
   };
 
   // Update default amount
@@ -237,13 +241,13 @@ export function PortfolioPage() {
           <p className="text-gray-400 mb-6">
             Please login with Internet Identity to view your portfolio
           </p>
-          <Link
-            to="/"
+              <Link 
+                to="/"
             className="inline-block bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-200"
           >
             Go to Login
-          </Link>
-        </div>
+              </Link>
+            </div>
       </div>
     );
   }
@@ -299,7 +303,16 @@ export function PortfolioPage() {
                 transition={{ delay: 0.1 }}
                 className="bg-black/30 backdrop-blur-lg rounded-2xl border border-white/10 p-6"
               >
-                <h2 className="text-xl font-bold text-white mb-4">Account Balance</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-white">Account Balance</h2>
+                  <button
+                    onClick={() => setShowDepositModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:opacity-90 transition-all duration-200 text-sm font-medium"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Deposit ICP
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="text-center">
                     <p className="text-gray-400 text-sm">ICP Balance</p>
@@ -319,18 +332,18 @@ export function PortfolioPage() {
 
             {/* Portfolio Grid */}
             {portfolioData && portfolioData.tokens.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {portfolioData.tokens.map((token, index) => (
-                  <motion.div
+                <motion.div
                     key={token.symbol}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
                     <PortfolioCard token={token} onSell={handleSell} onBuyMore={handleBuyMore} />
-                  </motion.div>
-                ))}
-              </div>
+                </motion.div>
+              ))}
+            </div>
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -343,34 +356,43 @@ export function PortfolioPage() {
                 <p className="text-gray-400 mb-6">
                   Start swiping to build your token portfolio!
                 </p>
-                <Link
-                  to="/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
-                  className="inline-block bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-200"
-                >
-                  Start Swiping
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={() => setShowDepositModal(true)}
+                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:opacity-90 transition-all duration-200 font-semibold"
+                  >
+                    <QrCode className="w-4 h-4" />
+                    Deposit ICP
+                  </button>
+                  <Link
+                    to="/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai"
+                    className="inline-block bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-200"
+                  >
+                    Start Swiping
+                  </Link>
+                </div>
               </motion.div>
             )}
 
             {/* Portfolio Summary */}
             {portfolioData && portfolioData.tokens.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-black/30 backdrop-blur-lg rounded-2xl border border-white/10 p-6"
-              >
-                <h2 className="text-xl font-bold text-white mb-4">Portfolio Summary</h2>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-black/30 backdrop-blur-lg rounded-2xl border border-white/10 p-6"
+            >
+              <h2 className="text-xl font-bold text-white mb-4">Portfolio Summary</h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <p className="text-gray-400 text-sm">Total Value</p>
-                    <p className="text-2xl font-bold text-cyan-400">
+                <div className="text-center">
+                  <p className="text-gray-400 text-sm">Total Value</p>
+                  <p className="text-2xl font-bold text-cyan-400">
                       ${portfolioData.tokens.reduce((sum, token) => sum + parseFloat(token.value), 0).toFixed(2)}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-gray-400 text-sm">Total Tokens</p>
-                    <p className="text-2xl font-bold text-white">
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-gray-400 text-sm">Total Tokens</p>
+                  <p className="text-2xl font-bold text-white">
                       {portfolioData.tokens.length}
                     </p>
                   </div>
@@ -378,16 +400,16 @@ export function PortfolioPage() {
                     <p className="text-gray-400 text-sm">Total Deposits</p>
                     <p className="text-2xl font-bold text-green-400">
                       {(portfolioData.total_deposits / 100).toFixed(2)} ICP
-                    </p>
-                  </div>
-                  <div className="text-center">
+                  </p>
+                </div>
+                <div className="text-center">
                     <p className="text-gray-400 text-sm">Total Swaps</p>
                     <p className="text-2xl font-bold text-orange-400">
                       {(portfolioData.total_swaps / 100).toFixed(2)} ICP
-                    </p>
-                  </div>
+                  </p>
                 </div>
-              </motion.div>
+              </div>
+            </motion.div>
             )}
 
             {/* Call to Action */}
@@ -418,6 +440,12 @@ export function PortfolioPage() {
 
       {/* Toast Notifications */}
       <Toast toast={toast} onClose={closeToast} />
+      
+      {/* Deposit Modal */}
+      <DepositModal 
+        isOpen={showDepositModal} 
+        onClose={() => setShowDepositModal(false)} 
+      />
     </div>
   );
 } 

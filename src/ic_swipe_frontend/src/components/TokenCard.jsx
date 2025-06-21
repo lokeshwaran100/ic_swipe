@@ -1,5 +1,125 @@
 import { ArrowUpRight, ArrowDownRight, Link as LinkIcon, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+
+// Import SVG definitions from SwipePage
+const TokenSVGs = {
+  // Doge-style SVG
+  DOGE: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#C2A633" stroke="#B8860B" strokeWidth="2"/>
+      <text x="50" y="35" textAnchor="middle" fontSize="12" fill="white" fontWeight="bold">DOGE</text>
+      <circle cx="38" cy="45" r="3" fill="white"/>
+      <circle cx="62" cy="45" r="3" fill="white"/>
+      <path d="M35 60 Q50 70 65 60" stroke="white" strokeWidth="2" fill="none"/>
+    </svg>
+  ),
+  
+  // Shiba-style SVG
+  SHIB: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#FFA500" stroke="#FF8C00" strokeWidth="2"/>
+      <text x="50" y="35" textAnchor="middle" fontSize="12" fill="white" fontWeight="bold">SHIB</text>
+      <polygon points="30,45 50,35 70,45 50,55" fill="white"/>
+      <circle cx="42" cy="48" r="2" fill="#FFA500"/>
+      <circle cx="58" cy="48" r="2" fill="#FFA500"/>
+    </svg>
+  ),
+  
+  // Pepe-style SVG
+  PEPE: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#00FF00" stroke="#00CC00" strokeWidth="2"/>
+      <text x="50" y="35" textAnchor="middle" fontSize="12" fill="white" fontWeight="bold">PEPE</text>
+      <ellipse cx="40" cy="48" rx="4" ry="6" fill="white"/>
+      <ellipse cx="60" cy="48" rx="4" ry="6" fill="white"/>
+      <ellipse cx="40" cy="48" rx="2" ry="3" fill="black"/>
+      <ellipse cx="60" cy="48" rx="2" ry="3" fill="black"/>
+      <path d="M35 62 Q50 68 65 62" stroke="white" strokeWidth="2" fill="none"/>
+    </svg>
+  ),
+  
+  // Bitcoin-style SVG
+  BTC: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#F7931A" stroke="#E8860F" strokeWidth="2"/>
+      <text x="50" y="58" textAnchor="middle" fontSize="24" fill="white" fontWeight="bold">₿</text>
+    </svg>
+  ),
+  
+  // Ethereum-style SVG
+  ETH: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#627EEA" stroke="#4A5FD1" strokeWidth="2"/>
+      <polygon points="50,20 35,52 50,62 65,52" fill="white" opacity="0.8"/>
+      <polygon points="50,20 65,52 50,40" fill="white"/>
+      <polygon points="50,65 35,55 50,80 65,55" fill="white" opacity="0.6"/>
+    </svg>
+  ),
+  
+  // Generic token SVGs
+  TOKEN1: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#8B5CF6" stroke="#7C3AED" strokeWidth="2"/>
+      <circle cx="50" cy="50" r="25" fill="none" stroke="white" strokeWidth="3"/>
+      <circle cx="50" cy="50" r="8" fill="white"/>
+    </svg>
+  ),
+  
+  TOKEN2: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#10B981" stroke="#059669" strokeWidth="2"/>
+      <polygon points="50,25 70,40 70,60 50,75 30,60 30,40" fill="white"/>
+      <polygon points="50,35 60,42 60,58 50,65 40,58 40,42" fill="#10B981"/>
+    </svg>
+  ),
+  
+  TOKEN3: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#F59E0B" stroke="#D97706" strokeWidth="2"/>
+      <rect x="35" y="35" width="30" height="30" rx="5" fill="white"/>
+      <circle cx="50" cy="50" r="8" fill="#F59E0B"/>
+    </svg>
+  ),
+  
+  TOKEN4: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#EF4444" stroke="#DC2626" strokeWidth="2"/>
+      <path d="M30 50 L50 30 L70 50 L50 70 Z" fill="white"/>
+      <circle cx="50" cy="50" r="5" fill="#EF4444"/>
+    </svg>
+  ),
+  
+  TOKEN5: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#06B6D4" stroke="#0891B2" strokeWidth="2"/>
+      <polygon points="50,20 25,40 25,60 50,80 75,60 75,40" fill="white"/>
+      <polygon points="50,30 35,42 35,58 50,70 65,58 65,42" fill="#06B6D4"/>
+    </svg>
+  ),
+  
+  // AI-themed SVGs
+  AI: () => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#6366F1" stroke="#4F46E5" strokeWidth="2"/>
+      <circle cx="40" cy="40" r="6" fill="white"/>
+      <circle cx="60" cy="40" r="6" fill="white"/>
+      <circle cx="50" cy="60" r="4" fill="white"/>
+      <path d="M35 70 Q50 75 65 70" stroke="white" strokeWidth="2" fill="none"/>
+      <text x="50" y="85" textAnchor="middle" fontSize="8" fill="white">AI</text>
+    </svg>
+  ),
+  
+  // Default fallback
+  DEFAULT: (symbol) => (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <circle cx="50" cy="50" r="45" fill="#6B7280" stroke="#4B5563" strokeWidth="2"/>
+      <text x="50" y="58" textAnchor="middle" fontSize="16" fill="white" fontWeight="bold">
+        {symbol?.slice(0, 3) || "?"}
+      </text>
+    </svg>
+  )
+};
 
 const TrustScore = ({ score, className = "" }) => {
   const getScoreColor = (score) => {
@@ -48,8 +168,17 @@ export function TokenCard({ token, trustScore }) {
     return `$${num.toFixed(2)}`;
   };
 
-  // Handle missing image URL
-  const imageUrl = token.info?.imageUrl || token.image || "/placeholder-token.png";
+  // Get SVG icon for token
+  const getSVGIcon = () => {
+    const svgType = token.svgIcon || 'DEFAULT';
+    const symbol = token.baseToken?.symbol || token.symbol || "?";
+    
+    if (TokenSVGs[svgType]) {
+      return svgType === 'DEFAULT' ? TokenSVGs[svgType](symbol) : TokenSVGs[svgType]();
+    }
+    
+    return TokenSVGs.DEFAULT(symbol);
+  };
 
   return (
     <motion.div 
@@ -69,15 +198,9 @@ export function TokenCard({ token, trustScore }) {
         {/* Token Image */}
         <div className="relative w-28 h-28 md:w-32 md:h-32">
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 rounded-2xl blur-xl opacity-50" />
-          <img
-            src={imageUrl}
-            alt={token.baseToken?.name || token.name}
-            className="rounded-2xl object-cover relative w-full h-full"
-            onError={(e) => {
-              e.target.src = "https://via.placeholder.com/128x128/1f2937/9ca3af?text=" + 
-                (token.baseToken?.symbol || token.symbol || "?");
-            }}
-          />
+          <div className="relative w-full h-full rounded-2xl overflow-hidden">
+            {getSVGIcon()}
+          </div>
         </div>
 
         {/* Token Info */}

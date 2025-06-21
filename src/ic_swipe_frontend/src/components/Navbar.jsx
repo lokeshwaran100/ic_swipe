@@ -101,7 +101,7 @@ export function Navbar({ onRefresh, refreshing = false }) {
             className="w-8 h-8 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-110"
           />
           <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-            IcSwipe
+            Ic Swipe
           </span>
         </Link>
         
@@ -121,7 +121,7 @@ export function Navbar({ onRefresh, refreshing = false }) {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           {/* Refresh button (if provided) */}
-          {onRefresh && (
+          {/* {onRefresh && (
             <button
               onClick={handleRefresh}
               disabled={refreshing}
@@ -132,7 +132,7 @@ export function Navbar({ onRefresh, refreshing = false }) {
                 {refreshing ? 'Refreshing...' : 'Refresh'}
               </span>
             </button>
-          )}
+          )} */}
 
           {/* Navigation Items */}
           {getVisibleNavItems().map((item) => {
@@ -215,7 +215,7 @@ export function Navbar({ onRefresh, refreshing = false }) {
           >
             <nav className="flex flex-col p-4 gap-2">
               {/* Refresh button (if provided) */}
-              {onRefresh && (
+              {/* {onRefresh && (
                 <button
                   onClick={() => { handleRefresh(); closeMenu(); }}
                   disabled={refreshing}
@@ -226,7 +226,7 @@ export function Navbar({ onRefresh, refreshing = false }) {
                     {refreshing ? 'Refreshing...' : 'Refresh'}
                   </span>
                 </button>
-              )}
+              )} */}
 
               {/* Navigation Items */}
               {getVisibleNavItems().map((item) => {

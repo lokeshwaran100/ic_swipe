@@ -32,16 +32,14 @@ export function OnboardingPage({ onContinue }) {
       const existingAmount = await actor.get_default_swap_amount();
       console.log('Existing default amount:', existingAmount);
 
-      const deposit_result = await actor.deposit_icp(BigInt(Number(existingAmount) * 2));
-      console.
-      log('Deposit result:', deposit_result);
+              const deposit_result = await actor.deposit_icp(BigInt(Number(existingAmount) * 2));
+        console.log('Deposit result:', deposit_result);
       
-      if (existingAmount > 0) {
-        setExistingDefaultAmount(existingAmount);
-        // If user already has default amount set, redirect to categories
-        const canisterId = 'be2us-64aaa-aaaaa-qaabq-cai'; // Frontend canister ID
-        // navigate(`/categories?canisterId=${canisterId}`);
-      }
+              if (existingAmount > 0) {
+          setExistingDefaultAmount(existingAmount);
+          // User already has default amount set, no need to redirect
+          console.log('User already has default amount set:', existingAmount);
+        }
     } catch (error) {
       console.error('Error checking existing default amount:', error);
     }
@@ -121,11 +119,8 @@ export function OnboardingPage({ onContinue }) {
         
         showToast(`Default amount set to ${amountInICP} ICP successfully!`, 'success');
         
-        // Navigate to categories page
-        const canisterId = 'be2us-64aaa-aaaaa-qaabq-cai'; // Frontend canister ID
-        setTimeout(() => {
-          navigate(`/categories?canisterId=${canisterId}`);
-        }, 1500);
+        // Update existing default amount state to hide the setup card
+        setExistingDefaultAmount(amountForContract);
       } else {
         throw new Error('Amount verification failed');
       }
@@ -160,7 +155,7 @@ export function OnboardingPage({ onContinue }) {
               />
             </div>
             <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent leading-tight">
-              Discover Crypto Like Never Before With IcSwipe
+              Discover Crypto Like Never Before With Ic Swipe
             </h1>
             <p className="text-base md:text-xl text-gray-300 px-4 md:px-0">
               Swipe right to discover and invest in the next big cryptocurrency tokens on the Internet Computer.
@@ -168,60 +163,102 @@ export function OnboardingPage({ onContinue }) {
             </p>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="w-full max-w-md mx-auto space-y-6 p-6 md:p-8 bg-black/30 backdrop-blur-lg rounded-2xl border border-white/10"
-          >
-            {!auth.isAuthenticated ? (
-              <button
-                onClick={handleSignIn}
-                disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white rounded-lg p-3 md:p-4 hover:opacity-90 transition text-sm md:text-base disabled:opacity-50"
-              >
-                <LogIn className="w-4 h-4 md:w-5 md:h-5" />
-                {isLoading ? 'Connecting...' : 'Login with Internet Identity'}
-              </button>
-            ) : (
-              <div className="space-y-4 md:space-y-6">
-                <div className="text-center space-y-2">
+          {/* Show setup card only when user is not authenticated OR authenticated but no default amount set */}
+          {(!auth.isAuthenticated || (auth.isAuthenticated && (!existingDefaultAmount || existingDefaultAmount === 0))) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="w-full max-w-md mx-auto space-y-6 p-6 md:p-8 bg-black/30 backdrop-blur-lg rounded-2xl border border-white/10"
+            >
+              {!auth.isAuthenticated ? (
+                <button
+                  onClick={handleSignIn}
+                  disabled={isLoading}
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white rounded-lg p-3 md:p-4 hover:opacity-90 transition text-sm md:text-base disabled:opacity-50"
+                >
+                  <LogIn className="w-4 h-4 md:w-5 md:h-5" />
+                  {isLoading ? 'Connecting...' : 'Login with Internet Identity'}
+                </button>
+              ) : (
+                <div className="space-y-4 md:space-y-6">
+                  <div className="text-center space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      Connected to Internet Computer
+                    </div>
+                  </div>
+                  
+                  <label className="block space-y-2">
+                    <span className="text-sm font-medium text-gray-300">Default Buy Amount (ICP)</span>
+                    <input
+                      type="number"
+                      value={defaultAmount}
+                      onChange={(e) => setDefaultAmount(e.target.value)}
+                      className="w-full p-3 md:p-4 rounded-lg bg-black/30 border border-white/10 focus:border-blue-500 outline-none transition text-white text-sm md:text-base"
+                      placeholder="0.1"
+                      step="0.01"
+                      min="0"
+                    />
+                  </label>
+                  
+                  <button
+                    onClick={handleContinue}
+                    disabled={!defaultAmount || parseFloat(defaultAmount) <= 0 || isSettingAmount}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white rounded-lg p-3 md:p-4 hover:opacity-90 transition disabled:opacity-50 text-sm md:text-base"
+                  >
+                    {isSettingAmount ? 'Setting Amount...' : 'Set Amount'}
+                    {!isSettingAmount && <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />}
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {/* Show welcome back message when user is authenticated and has default amount set */}
+          {auth.isAuthenticated && existingDefaultAmount && existingDefaultAmount > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="w-full max-w-md mx-auto space-y-6 p-6 md:p-8 bg-black/30 backdrop-blur-lg rounded-2xl border border-white/10"
+            >
+              <div className="text-center space-y-4">
+                <div className="space-y-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                     Connected to Internet Computer
                   </div>
-                  {existingDefaultAmount && existingDefaultAmount > 0 && (
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      Default Amount: {(existingDefaultAmount / 100).toFixed(2)} ICP
-                    </div>
-                  )}
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    Default Amount: {(Number(existingDefaultAmount) / 100).toFixed(2)} ICP
+                  </div>
                 </div>
                 
-                <label className="block space-y-2">
-                  <span className="text-sm font-medium text-gray-300">Default Buy Amount (ICP)</span>
-                  <input
-                    type="number"
-                    value={defaultAmount}
-                    onChange={(e) => setDefaultAmount(e.target.value)}
-                    className="w-full p-3 md:p-4 rounded-lg bg-black/30 border border-white/10 focus:border-blue-500 outline-none transition text-white text-sm md:text-base"
-                    placeholder="0.1"
-                    step="0.01"
-                    min="0"
-                  />
-                </label>
-                
-                <button
-                  onClick={handleContinue}
-                  disabled={!defaultAmount || parseFloat(defaultAmount) <= 0 || isSettingAmount}
-                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white rounded-lg p-3 md:p-4 hover:opacity-90 transition disabled:opacity-50 text-sm md:text-base"
-                >
-                  {isSettingAmount ? 'Setting Amount...' : 'Set Amount'}
-                  {!isSettingAmount && <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />}
-                </button>
+                <div className="space-y-3">
+                  <h3 className="text-xl font-bold text-white">Welcome Back!</h3>
+                  <p className="text-gray-300 text-sm">
+                    You're all set up and ready to start swiping. Explore token categories or check your portfolio.
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <button
+                    onClick={() => navigate('/categories?canisterId=be2us-64aaa-aaaaa-qaabq-cai')}
+                    className="flex-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-200"
+                  >
+                    Browse Categories
+                  </button>
+                  <button
+                    onClick={() => navigate('/portfolio?canisterId=be2us-64aaa-aaaaa-qaabq-cai')}
+                    className="flex-1 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-4 py-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-200"
+                  >
+                    View Portfolio
+                  </button>
+                </div>
               </div>
-            )}
-          </motion.div>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Key Features Section */}

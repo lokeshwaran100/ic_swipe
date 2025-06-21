@@ -52,7 +52,7 @@ function MainApp() {
            <div className="flex items-center gap-3">
              <img src="/ICSwipe.png" alt="IcSwipe Logo" className="h-10 w-10" />
              <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-               IcSwipe
+               Ic Swipe
              </span>
            </div>
            <div className="flex gap-3">

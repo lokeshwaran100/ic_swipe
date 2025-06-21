@@ -23,4 +23,5 @@ service : {
   "get_user_portfolio": () -> (UserPortfolio) query;
   "get_token_balance": (text) -> (nat64) query;
   "get_all_users_count": () -> (nat64) query;
+  "get_canister_account": () -> (text) query;
 }
