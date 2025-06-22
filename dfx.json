@@ -14,18 +14,6 @@
       ],
       "type": "assets",
       "workspace": "ic_swipe_frontend"
-    },
-    "internet_identity": {
-      "type": "custom",
-      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
-      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz",
-      "remote": {
-        "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
-        "id": {
-          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
-        }
-      },
-      "frontend": {}
     }
   },
   "defaults": {
