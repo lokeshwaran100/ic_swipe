@@ -13,113 +13,113 @@ const TokenSVGs = {
   // Doge-style SVG
   DOGE: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#C2A633" stroke="#B8860B" strokeWidth="2"/>
+      <circle cx="50" cy="50" r="45" fill="#C2A633" stroke="#B8860B" strokeWidth="2" />
       <text x="50" y="35" textAnchor="middle" fontSize="12" fill="white" fontWeight="bold">DOGE</text>
-      <circle cx="38" cy="45" r="3" fill="white"/>
-      <circle cx="62" cy="45" r="3" fill="white"/>
-      <path d="M35 60 Q50 70 65 60" stroke="white" strokeWidth="2" fill="none"/>
+      <circle cx="38" cy="45" r="3" fill="white" />
+      <circle cx="62" cy="45" r="3" fill="white" />
+      <path d="M35 60 Q50 70 65 60" stroke="white" strokeWidth="2" fill="none" />
     </svg>
   ),
-  
+
   // Shiba-style SVG
   SHIB: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#FFA500" stroke="#FF8C00" strokeWidth="2"/>
+      <circle cx="50" cy="50" r="45" fill="#FFA500" stroke="#FF8C00" strokeWidth="2" />
       <text x="50" y="35" textAnchor="middle" fontSize="12" fill="white" fontWeight="bold">SHIB</text>
-      <polygon points="30,45 50,35 70,45 50,55" fill="white"/>
-      <circle cx="42" cy="48" r="2" fill="#FFA500"/>
-      <circle cx="58" cy="48" r="2" fill="#FFA500"/>
+      <polygon points="30,45 50,35 70,45 50,55" fill="white" />
+      <circle cx="42" cy="48" r="2" fill="#FFA500" />
+      <circle cx="58" cy="48" r="2" fill="#FFA500" />
     </svg>
   ),
-  
+
   // Pepe-style SVG
   PEPE: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#00FF00" stroke="#00CC00" strokeWidth="2"/>
+      <circle cx="50" cy="50" r="45" fill="#00FF00" stroke="#00CC00" strokeWidth="2" />
       <text x="50" y="35" textAnchor="middle" fontSize="12" fill="white" fontWeight="bold">PEPE</text>
-      <ellipse cx="40" cy="48" rx="4" ry="6" fill="white"/>
-      <ellipse cx="60" cy="48" rx="4" ry="6" fill="white"/>
-      <ellipse cx="40" cy="48" rx="2" ry="3" fill="black"/>
-      <ellipse cx="60" cy="48" rx="2" ry="3" fill="black"/>
-      <path d="M35 62 Q50 68 65 62" stroke="white" strokeWidth="2" fill="none"/>
+      <ellipse cx="40" cy="48" rx="4" ry="6" fill="white" />
+      <ellipse cx="60" cy="48" rx="4" ry="6" fill="white" />
+      <ellipse cx="40" cy="48" rx="2" ry="3" fill="black" />
+      <ellipse cx="60" cy="48" rx="2" ry="3" fill="black" />
+      <path d="M35 62 Q50 68 65 62" stroke="white" strokeWidth="2" fill="none" />
     </svg>
   ),
-  
+
   // Bitcoin-style SVG
   BTC: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#F7931A" stroke="#E8860F" strokeWidth="2"/>
+      <circle cx="50" cy="50" r="45" fill="#F7931A" stroke="#E8860F" strokeWidth="2" />
       <text x="50" y="58" textAnchor="middle" fontSize="24" fill="white" fontWeight="bold">₿</text>
     </svg>
   ),
-  
+
   // Ethereum-style SVG
   ETH: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#627EEA" stroke="#4A5FD1" strokeWidth="2"/>
-      <polygon points="50,20 35,52 50,62 65,52" fill="white" opacity="0.8"/>
-      <polygon points="50,20 65,52 50,40" fill="white"/>
-      <polygon points="50,65 35,55 50,80 65,55" fill="white" opacity="0.6"/>
+      <circle cx="50" cy="50" r="45" fill="#627EEA" stroke="#4A5FD1" strokeWidth="2" />
+      <polygon points="50,20 35,52 50,62 65,52" fill="white" opacity="0.8" />
+      <polygon points="50,20 65,52 50,40" fill="white" />
+      <polygon points="50,65 35,55 50,80 65,55" fill="white" opacity="0.6" />
     </svg>
   ),
-  
+
   // Generic token SVGs
   TOKEN1: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#8B5CF6" stroke="#7C3AED" strokeWidth="2"/>
-      <circle cx="50" cy="50" r="25" fill="none" stroke="white" strokeWidth="3"/>
-      <circle cx="50" cy="50" r="8" fill="white"/>
+      <circle cx="50" cy="50" r="45" fill="#8B5CF6" stroke="#7C3AED" strokeWidth="2" />
+      <circle cx="50" cy="50" r="25" fill="none" stroke="white" strokeWidth="3" />
+      <circle cx="50" cy="50" r="8" fill="white" />
     </svg>
   ),
-  
+
   TOKEN2: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#10B981" stroke="#059669" strokeWidth="2"/>
-      <polygon points="50,25 70,40 70,60 50,75 30,60 30,40" fill="white"/>
-      <polygon points="50,35 60,42 60,58 50,65 40,58 40,42" fill="#10B981"/>
+      <circle cx="50" cy="50" r="45" fill="#10B981" stroke="#059669" strokeWidth="2" />
+      <polygon points="50,25 70,40 70,60 50,75 30,60 30,40" fill="white" />
+      <polygon points="50,35 60,42 60,58 50,65 40,58 40,42" fill="#10B981" />
     </svg>
   ),
-  
+
   TOKEN3: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#F59E0B" stroke="#D97706" strokeWidth="2"/>
-      <rect x="35" y="35" width="30" height="30" rx="5" fill="white"/>
-      <circle cx="50" cy="50" r="8" fill="#F59E0B"/>
+      <circle cx="50" cy="50" r="45" fill="#F59E0B" stroke="#D97706" strokeWidth="2" />
+      <rect x="35" y="35" width="30" height="30" rx="5" fill="white" />
+      <circle cx="50" cy="50" r="8" fill="#F59E0B" />
     </svg>
   ),
-  
+
   TOKEN4: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#EF4444" stroke="#DC2626" strokeWidth="2"/>
-      <path d="M30 50 L50 30 L70 50 L50 70 Z" fill="white"/>
-      <circle cx="50" cy="50" r="5" fill="#EF4444"/>
+      <circle cx="50" cy="50" r="45" fill="#EF4444" stroke="#DC2626" strokeWidth="2" />
+      <path d="M30 50 L50 30 L70 50 L50 70 Z" fill="white" />
+      <circle cx="50" cy="50" r="5" fill="#EF4444" />
     </svg>
   ),
-  
+
   TOKEN5: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#06B6D4" stroke="#0891B2" strokeWidth="2"/>
-      <polygon points="50,20 25,40 25,60 50,80 75,60 75,40" fill="white"/>
-      <polygon points="50,30 35,42 35,58 50,70 65,58 65,42" fill="#06B6D4"/>
+      <circle cx="50" cy="50" r="45" fill="#06B6D4" stroke="#0891B2" strokeWidth="2" />
+      <polygon points="50,20 25,40 25,60 50,80 75,60 75,40" fill="white" />
+      <polygon points="50,30 35,42 35,58 50,70 65,58 65,42" fill="#06B6D4" />
     </svg>
   ),
-  
+
   // AI-themed SVGs
   AI: () => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#6366F1" stroke="#4F46E5" strokeWidth="2"/>
-      <circle cx="40" cy="40" r="6" fill="white"/>
-      <circle cx="60" cy="40" r="6" fill="white"/>
-      <circle cx="50" cy="60" r="4" fill="white"/>
-      <path d="M35 70 Q50 75 65 70" stroke="white" strokeWidth="2" fill="none"/>
+      <circle cx="50" cy="50" r="45" fill="#6366F1" stroke="#4F46E5" strokeWidth="2" />
+      <circle cx="40" cy="40" r="6" fill="white" />
+      <circle cx="60" cy="40" r="6" fill="white" />
+      <circle cx="50" cy="60" r="4" fill="white" />
+      <path d="M35 70 Q50 75 65 70" stroke="white" strokeWidth="2" fill="none" />
       <text x="50" y="85" textAnchor="middle" fontSize="8" fill="white">AI</text>
     </svg>
   ),
-  
+
   // Default fallback
   DEFAULT: (symbol) => (
     <svg viewBox="0 0 100 100" className="w-full h-full">
-      <circle cx="50" cy="50" r="45" fill="#6B7280" stroke="#4B5563" strokeWidth="2"/>
+      <circle cx="50" cy="50" r="45" fill="#6B7280" stroke="#4B5563" strokeWidth="2" />
       <text x="50" y="58" textAnchor="middle" fontSize="16" fill="white" fontWeight="bold">
         {symbol?.slice(0, 3) || "?"}
       </text>
@@ -490,7 +490,7 @@ export function SwipePage() {
   const [isSwapping, setIsSwapping] = useState(false);
   const [icpBalance, setIcpBalance] = useState(0);
   const controls = useAnimation();
-  
+
   // Add authentication
   const auth = useAuth({});
 
@@ -605,44 +605,44 @@ export function SwipePage() {
     setIsSwapping(true);
     console.log('Buying token:', currentToken);
     console.log('Using default swap amount:', defaultSwapAmount);
-    
+
     try {
       const tokenSymbol = currentToken.baseToken?.symbol || currentToken.symbol;
       const tokenName = currentToken.baseToken?.name || currentToken.name;
-      
+
       console.log('Making swap_icp_to_token call with:', {
         tokenSymbol,
         amount: defaultSwapAmount
       });
-      
+
       // Call the smart contract swap function
       const swapResult = await auth.actor.swap_icp_to_token(tokenSymbol, BigInt(defaultSwapAmount));
       console.log('Swap result:', swapResult);
-      
-         if (swapResult.success) {
-         // Update local ICP balance
-         setIcpBalance(Number(swapResult.new_icp_balance));
-         
-         // Show success toast
-      setToast({
-        type: 'success',
-        title: 'Token Purchased! 🚀',
-           message: `Successfully swapped ${(defaultSwapAmount / 100).toFixed(2)} ICP for ${tokenName}. New ICP balance: ${(Number(swapResult.new_icp_balance) / 100).toFixed(2)}`,
-           duration: 5000
-         });
-       } else {
+
+      if (swapResult.success) {
+        // Update local ICP balance
+        setIcpBalance(Number(swapResult.new_icp_balance));
+
+        // Show success toast
+        setToast({
+          type: 'success',
+          title: 'Token Purchased! 🚀',
+          message: `Successfully swapped ${(defaultSwapAmount / 100).toFixed(2)} ICP for ${tokenName}. New ICP balance: ${(Number(swapResult.new_icp_balance) / 100).toFixed(2)}`,
+          duration: 5000
+        });
+      } else {
         // Show error toast with backend message
         setToast({
           type: 'error',
           title: 'Swap Failed',
           message: swapResult.message || 'Failed to swap tokens',
-        duration: 4000
-      });
+          duration: 4000
+        });
       }
-      
+
     } catch (error) {
       console.error('Error calling swap_icp_to_token:', error);
-      
+
       // Show error toast
       setToast({
         type: 'error',
@@ -653,7 +653,7 @@ export function SwipePage() {
     } finally {
       setIsSwapping(false);
     }
-    
+
     // Move to next token
     if (currentIndex < tokens.length - 1) {
       setCurrentIndex(prev => prev + 1);
@@ -663,7 +663,7 @@ export function SwipePage() {
 
   const handleSkip = async () => {
     console.log('Skipping token:', currentToken);
-    
+
     // Show info toast
     setToast({
       type: 'info',
@@ -671,7 +671,7 @@ export function SwipePage() {
       message: `Passed on ${currentToken.baseToken?.name || currentToken.name}`,
       duration: 2000
     });
-    
+
     // Move to next token
     if (currentIndex < tokens.length - 1) {
       setCurrentIndex(prev => prev + 1);
@@ -745,12 +745,12 @@ export function SwipePage() {
                   <div className="flex items-center gap-2 px-2 py-1 bg-green-500/20 rounded-lg border border-green-500/30">
                     <span className="text-xs text-green-400">
                       Balance: {(icpBalance / 100).toFixed(2)} ICP
-              </span>
+                    </span>
                   </div>
                 </div>
               )}
             </div>
-            
+
             <ThumbsDown className="w-6 h-6 text-red-400 animate-pulse" />
             <ThumbsUp className="w-6 h-6 text-green-400 animate-pulse" />
           </div>
@@ -795,7 +795,7 @@ export function SwipePage() {
             {/* Mobile Instructions */}
             <div className="absolute -top-20 left-1/2 -translate-x-1/2 md:hidden flex flex-col items-center gap-2">
               <div className="text-gray-400 text-sm whitespace-nowrap">
-              Swipe left to skip, right to buy
+                Swipe left to skip, right to buy
               </div>
               {auth.isAuthenticated && (
                 <div className="flex flex-col items-center gap-1">

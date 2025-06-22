@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Sparkles, Skull, Star, Rocket, Brain, Wallet } from 'lucide-react';
 import { CategoryCard } from './CategoryCard';
+import { NeuralHunt } from './NeuralHunt';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './Login';
@@ -53,6 +54,13 @@ export function CategoryPage() {
     navigate(`/swipe/${categoryId}?canisterId=be2us-64aaa-aaaaa-qaabq-cai`);
   };
 
+  const handleNeuralHuntStart = (tokens, prompt) => {
+    console.log('Starting AI Hunt with tokens:', tokens);
+    navigate('/neural-hunt', { 
+      state: { tokens, prompt }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative">
       {/* Unified Navbar */}
@@ -74,13 +82,23 @@ export function CategoryPage() {
             </p>
           </motion.div>
 
+          {/* AI Hunt Feature */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8"
+          >
+            <NeuralHunt onStartTrading={handleNeuralHuntStart} />
+          </motion.div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {categories.map((category, index) => (
               <motion.div
                 key={category.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: (index + 1) * 0.1 }}
               >
                 <CategoryCard
                   category={category}
