@@ -1,4 +1,4 @@
-# IC Swipe - Gamified Crypto Discovery Platform
+# <img src="asset/logo.png" width="25px" alt="logo"> IC Swipe - Gamified Crypto Discovery Platform
 
 IC Swipe is a gamified crypto discovery and trading platform built on the Internet Computer Protocol (ICP). Users can discover and trade tokens through an intuitive Tinder-like swiping interface.
 
