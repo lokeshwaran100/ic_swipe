@@ -4,10 +4,11 @@ import { createActor } from 'declarations/ic_swipe_backend';
 import { canisterId } from 'declarations/ic_swipe_backend/index.js';
 
 const network = process.env.DFX_NETWORK;
-const identityProvider =
-  network === 'ic'
-    ? 'https://identity.ic0.app' // Mainnet
-    : 'http://br5f7-7uaaa-aaaaa-qaaca-cai.localhost:4943/'; // Local II canister ID
+const identityProvider = 'https://identity.ic0.app';
+// const identityProvider =
+//   network === 'ic'
+//     ? 'https://identity.ic0.app' // Mainnet
+//     : 'http://be2us-64aaa-aaaaa-qaabq-cai.localhost:4943'; // Local II canister ID
 
 // Reusable button component with Tailwind styles
 const Button = ({ onClick, children, className = '' }) => (
